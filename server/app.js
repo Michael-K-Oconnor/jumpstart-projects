@@ -15,31 +15,29 @@ app.use(helmet());
 app.use(bodyParser.json());
 
 app.get(
-  '/api/sample-projects',
+  '/api/projects/:projectId',
   asyncMiddleware(async (req, res) => {
-    let sample_ids = [];
-    while (sample_ids.length < 6) {
-      let id = Math.ceil(Math.random() * 108);
-      if (!sample_ids.includes(id)) {
-        sample_ids.push(id);
+    if (req.params.projectId === 'sample') {
+      let sampleIds = [];
+      while (sampleIds.length < 6) {
+        let projectId = Math.ceil(Math.random() * 108);
+        if (!sampleIds.includes(projectId)) {
+          sampleIds.push(projectId);
+        }
       }
+      const result = await db.getSampleProjects(sampleIds);
+      res.json(result);
+    } else {
+      const result = await db.getProjectInfo(req.params.projectId);
+      res.json(result[0]);
     }
-    const result = await db.getSampleProjects(sample_ids);
-    res.json(result);
-  })
-);
-
-app.get(
-  '/api/projects/:project_id',
-  asyncMiddleware(async (req, res) => {
-    const result = await db.getProjectInfo(req.params.project_id);
-    res.json(result);
   })
 );
 
 app.post(
   '/api/projects',
   asyncMiddleware(async (req, res) => {
+    console.log(req.body);
     await db.makePledge(req.body);
     res.sendStatus(201);
   })

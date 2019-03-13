@@ -1,20 +1,20 @@
 const db = require('./knex');
 
-const getProjectInfo = project_id =>
+const getProjectInfo = projectId =>
   db('projects')
     .select()
-    .where({ project_id });
+    .where({ projectId });
 
-const getSampleProjects = sample_ids =>
+const getSampleProjects = sampleIds =>
   db('projects')
     .select()
-    .whereIn('project_id', sample_ids);
+    .whereIn('projectId', sampleIds);
 
-const makePledge = ({ project_id, pledge_amount, hasBacked }) =>
+const makePledge = ({ projectId, pledgeAmount, hasBacked }) =>
   db('projects')
-    .where({ project_id })
+    .where({ projectId })
     .increment({
-      pledged: pledge_amount,
+      pledged: pledgeAmount,
       backer_count: Number(!hasBacked)
     });
 

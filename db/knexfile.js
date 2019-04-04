@@ -14,10 +14,7 @@ const convertToCamel = result => {
   }
 };
 
-const convertToSnakeCase = value =>
-  value.replace(/([A-Z])/g, function($1) {
-    return '_' + $1.toLowerCase();
-  });
+const convertToSnakeCase = value => value.replace(/([A-Z])/g, char => `_${char.toLowerCase()}`);
 
 module.exports = {
   development: {
@@ -45,9 +42,9 @@ module.exports = {
     client: 'postgresql',
     connection: {
       database: 'jumpstartprojects',
-      user: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      host: process.env.DB_HOST
+      user: 'admin',
+      password: 'admin',
+      host: 'db-projects'
     },
     wrapIdentifier: (value, origImpl) => origImpl(convertToSnakeCase(value)),
     postProcessResponse: result => convertToCamel(result),

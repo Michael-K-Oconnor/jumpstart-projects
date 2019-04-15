@@ -1,7 +1,8 @@
 const express = require('express');
-const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
+const cors = require('cors');
+const morgan = require('morgan');
 
 const app = express();
 const db = require('../db/db.js');
@@ -10,7 +11,10 @@ const asyncMiddleware = fn => (req, res, next) => {
   Promise.resolve(fn(req, res, next)).catch(next);
 };
 
-app.use(morgan('dev'));
+if (process.env.NODE_ENV === 'development') {
+  app.use(cors());
+  app.use(morgan('dev'));
+}
 app.use(helmet());
 app.use(bodyParser.json());
 
@@ -18,9 +22,9 @@ app.get(
   '/api/projects/:projectId',
   asyncMiddleware(async (req, res) => {
     if (req.params.projectId === 'sample') {
-      let sampleIds = [];
+      const sampleIds = [];
       while (sampleIds.length < 6) {
-        let projectId = Math.ceil(Math.random() * 108);
+        const projectId = Math.ceil(Math.random() * 108);
         if (!sampleIds.includes(projectId)) {
           sampleIds.push(projectId);
         }
